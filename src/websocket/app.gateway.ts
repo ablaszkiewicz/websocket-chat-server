@@ -9,7 +9,7 @@ import {
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { Message } from '../message.entity';
-
+import { JwtService } from '@nestjs/jwt';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -18,6 +18,8 @@ import { Message } from '../message.entity';
 export class AppGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(private readonly jwtService: JwtService) {}
+
   @WebSocketServer() server: Server;
   private logger: Logger = new Logger('AppGateway');
 
@@ -35,7 +37,15 @@ export class AppGateway
     this.logger.log(`Client disconnected: ${client.id}`);
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(client: Socket, ...args: any[]) {
+    const token = client.handshake.headers.authorization;
+
+    try {
+      this.jwtService.verify(token);
+    } catch (e) {
+      client.disconnect();
+    }
+
     this.logger.log(`Client connected: ${client.id}`);
   }
 }

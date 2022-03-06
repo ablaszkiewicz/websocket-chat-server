@@ -8,7 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-import { Message } from './message.entity';
+import { Message } from '../message.entity';
 
 @WebSocketGateway({
   cors: {

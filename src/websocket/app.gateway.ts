@@ -43,6 +43,7 @@ export class AppGateway
     try {
       this.jwtService.verify(token);
     } catch (e) {
+      client.emit('unauthorized');
       client.disconnect();
     }
 

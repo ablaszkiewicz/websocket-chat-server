@@ -11,4 +11,9 @@ export class AuthController {
   async login(@Request() req, @Body() body): Promise<any> {
     return this.authService.login(req.user);
   }
+
+  @Post('auth/guest')
+  async loginGuest(): Promise<any> {
+    return this.authService.loginGuest();
+  }
 }

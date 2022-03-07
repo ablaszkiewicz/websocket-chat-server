@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { first } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,9 @@ export class AuthService {
       password: '123',
     },
   ];
+
+  adjectives = ['zmęczony', 'chytry', 'wściekły', 'wielki'];
+  nouns = ['delfin', 'żółw', 'kot', 'pies', 'krokodyl'];
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = this.users.filter(
@@ -32,6 +36,21 @@ export class AuthService {
 
     return {
       username: user.username,
+      token: this.jwtService.sign(payload),
+    };
+  }
+
+  async loginGuest() {
+    const username = `${
+      this.adjectives[Math.floor(Math.random() * this.adjectives.length)]
+    } ${this.nouns[Math.floor(Math.random() * this.nouns.length)]}`;
+
+    const usernameUppercased =
+      username.charAt(0).toUpperCase() + username.slice(1);
+
+    const payload = { sub: username };
+    return {
+      username: usernameUppercased,
       token: this.jwtService.sign(payload),
     };
   }

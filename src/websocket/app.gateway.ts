@@ -24,8 +24,8 @@ export class AppGateway
   private logger: Logger = new Logger('AppGateway');
 
   @SubscribeMessage('msgToServer')
-  handleMessage(client: Socket, payload: string): void {
-    this.server.emit('msgToClient', payload);
+  handleMessage(client: Socket, message: Message): void {
+    this.server.emit('msgToClient', message);
   }
 
   afterInit(server: Server) {
@@ -33,20 +33,43 @@ export class AppGateway
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.log(`Client disconnected: ${client.id}`);
-  }
-
-  async handleConnection(client: Socket, ...args: any[]) {
     const token = client.handshake.headers.authorization;
+    this.logger.log(`Client disconnected: ${client.id}`);
 
+    let decoded;
     try {
-      this.jwtService.verify(token);
+      decoded = this.jwtService.verify(token);
     } catch (e) {
       client.emit('unauthorized');
       client.disconnect();
     }
 
+    const usernameUppercased =
+      decoded.sub.charAt(0).toUpperCase() + decoded.sub.slice(1);
     this.logger.log(`Client connected: ${client.id}`);
-    client.broadcast.emit('systemMsgToClient', `Someone connected`);
+    client.broadcast.emit(
+      'systemMsgToClient',
+      `${usernameUppercased} disconnected`,
+    );
+  }
+
+  async handleConnection(client: Socket, ...args: any[]) {
+    const token = client.handshake.headers.authorization;
+
+    let decoded;
+    try {
+      decoded = this.jwtService.verify(token);
+    } catch (e) {
+      client.emit('unauthorized');
+      client.disconnect();
+    }
+
+    const usernameUppercased =
+      decoded.sub.charAt(0).toUpperCase() + decoded.sub.slice(1);
+    this.logger.log(`Client connected: ${client.id}`);
+    client.broadcast.emit(
+      'systemMsgToClient',
+      `${usernameUppercased} connected`,
+    );
   }
 }

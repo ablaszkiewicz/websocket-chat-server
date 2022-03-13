@@ -17,8 +17,24 @@ export class AuthService {
     },
   ];
 
-  adjectives = ['zmęczony', 'chytry', 'wściekły', 'wielki'];
-  nouns = ['delfin', 'żółw', 'kot', 'pies', 'krokodyl'];
+  adjectives = ['hungry', 'horny', 'mad', 'smelly', 'lazy', 'fluffy', 'gentle'];
+  nouns = [
+    'unicorn',
+    'wombat',
+    'shrimp',
+    'penguin',
+    'panda',
+    'monkey',
+    'lion',
+    'koala',
+    'hippo',
+    'frog',
+    'dolphin',
+    'coyote',
+    'cheetah',
+    'axolotl',
+    'alligator',
+  ];
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = this.users.filter(

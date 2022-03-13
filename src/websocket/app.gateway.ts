@@ -25,7 +25,6 @@ export class AppGateway
 
   @SubscribeMessage('msgToServer')
   handleMessage(client: Socket, payload: string): void {
-    const message: Message = JSON.parse(payload);
     this.server.emit('msgToClient', payload);
   }
 
@@ -48,5 +47,6 @@ export class AppGateway
     }
 
     this.logger.log(`Client connected: ${client.id}`);
+    client.broadcast.emit('systemMsgToClient', `Someone connected`);
   }
 }

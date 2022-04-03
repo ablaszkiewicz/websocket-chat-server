@@ -34,7 +34,6 @@ export class AuthService {
   }
 
   async login(user: LoginUserDto) {
-    const isValid = this.validateUser(user.username, user.password);
     const payload = { sub: user.username };
 
     return {

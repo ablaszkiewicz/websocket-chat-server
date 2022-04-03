@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -32,6 +32,7 @@ export class UsersService {
 
   async validate(username: string, password: string) : Promise<boolean>{
     const user = await this.userModel.findOne({username: username});
+    if (user === null) throw new UnauthorizedException();
     return user.validatePassword(password);
   }
 

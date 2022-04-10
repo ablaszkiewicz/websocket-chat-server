@@ -14,7 +14,11 @@ import { File } from 'src/file.entity';
 @WebSocketGateway({
   cors: {
     origin: '*',
+    transports: ['websocket', 'polling'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
   },
+  allowEIO3: true,
 })
 export class AppGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -29,9 +33,15 @@ export class AppGateway
     this.server.emit('msgToClient', message);
   }
 
-  @SubscribeMessage('fileToServer')
-  handleFile(client: Socket, file: File): void {
-    this.server.emit('fileToClient', file);
+  @SubscribeMessage('fileMetaToServer')
+  handleFileMeta(client: Socket, file: File): void {
+    this.server.emit('fileMetaToClient', file);
+  }
+
+  @SubscribeMessage('filePartToServer')
+  handleFilePart(client: Socket, file: File): void {
+    console.log('Got part');
+    this.server.emit('filePartToClient', file);
   }
 
   afterInit(server: Server) {

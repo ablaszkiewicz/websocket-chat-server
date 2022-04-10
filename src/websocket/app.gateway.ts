@@ -10,6 +10,7 @@ import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { Message } from '../message.entity';
 import { JwtService } from '@nestjs/jwt';
+import { File } from 'src/file.entity';
 @WebSocketGateway({
   cors: {
     origin: '*',
@@ -26,6 +27,11 @@ export class AppGateway
   @SubscribeMessage('msgToServer')
   handleMessage(client: Socket, message: Message): void {
     this.server.emit('msgToClient', message);
+  }
+
+  @SubscribeMessage('fileToServer')
+  handleFile(client: Socket, file: File): void {
+    this.server.emit('fileToClient', file);
   }
 
   afterInit(server: Server) {

@@ -10,10 +10,15 @@ import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { Message } from '../message.entity';
 import { JwtService } from '@nestjs/jwt';
+import { File } from 'src/file.entity';
 @WebSocketGateway({
   cors: {
     origin: '*',
+    transports: ['websocket', 'polling'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
   },
+  allowEIO3: true,
 })
 export class AppGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -26,6 +31,17 @@ export class AppGateway
   @SubscribeMessage('msgToServer')
   handleMessage(client: Socket, message: Message): void {
     this.server.emit('msgToClient', message);
+  }
+
+  @SubscribeMessage('fileMetaToServer')
+  handleFileMeta(client: Socket, file: File): void {
+    this.server.emit('fileMetaToClient', file);
+  }
+
+  @SubscribeMessage('filePartToServer')
+  handleFilePart(client: Socket, file: File): void {
+    console.log('Got part');
+    this.server.emit('filePartToClient', file);
   }
 
   afterInit(server: Server) {

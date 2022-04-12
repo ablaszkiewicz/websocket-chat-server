@@ -1,21 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { first } from 'rxjs';
+import { LoginUserDto } from 'src/users/dto/login-user.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService) {}
-
-  users = [
-    {
-      username: 'Olucha',
-      password: '123',
-    },
-    {
-      username: 'Matejuk',
-      password: '123',
-    },
-  ];
+  constructor(
+    private jwtService: JwtService,
+    private userSerice: UsersService) {}
 
   adjectives = ['hungry', 'horny', 'mad', 'smelly', 'lazy', 'fluffy', 'gentle'];
   nouns = [
@@ -36,18 +29,11 @@ export class AuthService {
     'alligator',
   ];
 
-  async validateUser(username: string, password: string): Promise<any> {
-    const user = this.users.filter(
-      (userTmp) => userTmp.username === username,
-    )[0] as any;
-    if (user.password == password) {
-      return user;
-    }
-
-    return null;
+  async validateUser(username: string, password: string): Promise<boolean> {
+    return this.userSerice.validate(username, password);
   }
 
-  async login(user: any) {
+  async login(user: LoginUserDto) {
     const payload = { sub: user.username };
 
     return {

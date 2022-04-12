@@ -40,7 +40,6 @@ export class AppGateway
 
   @SubscribeMessage('filePartToServer')
   handleFilePart(client: Socket, file: File): void {
-    console.log('Got part');
     this.server.emit('filePartToClient', file);
   }
 
@@ -53,7 +52,8 @@ export class AppGateway
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
-    const token = client.handshake.headers.authorization;
+    console.log(client.handshake);
+    const token = client.handshake.query.token as string;
 
     let decoded;
     try {

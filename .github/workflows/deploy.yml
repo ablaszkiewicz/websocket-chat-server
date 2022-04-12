@@ -38,4 +38,4 @@ jobs:
           script: |
             docker stop $(docker ps -q --filter ancestor=ablaszkiewicz/websocket-chat-server )
             docker pull ablaszkiewicz/websocket-chat-server
-            docker run -e DB_CONNECTION_STRING=${{secrets.DB_CONNECTION_STRING}} -d -p 6969:3001 ablaszkiewicz/websocket-chat-server
+            docker run -e DB_CONNECTION_STRING=${{secrets.DB_CONNECTION_STRING}} -p 6969:3001 -d ablaszkiewicz/websocket-chat-server

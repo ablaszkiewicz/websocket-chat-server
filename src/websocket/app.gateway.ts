@@ -52,7 +52,6 @@ export class AppGateway
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
-    console.log(client.handshake);
     const token = client.handshake.query.token as string;
 
     let decoded;

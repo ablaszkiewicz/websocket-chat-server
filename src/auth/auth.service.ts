@@ -8,7 +8,8 @@ import { UsersService } from 'src/users/users.service';
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private userSerice: UsersService) {}
+    private userSerice: UsersService,
+  ) {}
 
   adjectives = ['hungry', 'horny', 'mad', 'smelly', 'lazy', 'fluffy', 'gentle'];
   nouns = [

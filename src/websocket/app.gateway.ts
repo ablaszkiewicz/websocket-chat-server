@@ -43,6 +43,11 @@ export class AppGateway
     this.server.emit('filePartToClient', file);
   }
 
+  @SubscribeMessage('requestKeyToServer')
+  handleRequestKey(client: Socket): void {
+    client.emit('responseKeyToClient', 'supersecret');
+  }
+
   afterInit(server: Server) {
     this.logger.log('Init');
   }

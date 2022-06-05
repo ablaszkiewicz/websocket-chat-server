@@ -44,8 +44,23 @@ export class AppGateway
   }
 
   @SubscribeMessage('requestKeyToServer')
-  handleRequestKey(client: Socket): void {
-    client.emit('responseKeyToClient', 'supersecret');
+  async handleRequestKey(client: Socket, publicKey: string): Promise<string> {
+    const connectedClients = await this.server.fetchSockets();
+    const target = connectedClients.find((c) => c.id != client.id);
+
+    if (!target) {
+      return '';
+    } else {
+      return this.getKeyFromClient(target, publicKey);
+    }
+  }
+
+  async getKeyFromClient(client: any, publicKey: string): Promise<string> {
+    return new Promise((resolve) => {
+      client.emit('requestKeyToClient', publicKey, (keyObject: string) => {
+        resolve((keyObject as any).cipher);
+      });
+    });
   }
 
   afterInit(server: Server) {
